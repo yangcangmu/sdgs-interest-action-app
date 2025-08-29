@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import {
   collection,
@@ -28,7 +28,7 @@ export default function Page() {
   const seatsCol = useMemo(() => (db ? collection(db, 'seats') : null), []);
 
   // 10席固定の座席データを初期化
-  const initializeSeats = async () => {
+  const initializeSeats = useCallback(async () => {
     if (!db || seats.length > 0) return;
     try {
       const batch = writeBatch(db);
@@ -42,7 +42,7 @@ export default function Page() {
     } catch (e) {
       console.error('[seats] initialize failed', e);
     }
-  };
+  }, [db, seats.length]);
 
   // 初回マウント時に空なら初期化（ワンショット）
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function Page() {
       }
     };
     run();
-  }, [seatsCol]);
+  }, [seatsCol, initializeSeats]);
 
   // リアルタイム購読
   useEffect(() => {
@@ -73,7 +73,7 @@ export default function Page() {
         return;
       }
       const next: Seat[] = snap.docs.map((d) => {
-        const data = d.data() as any;
+        const data = d.data() as { occupied?: boolean; occupantName?: string };
         return {
           id: d.id,
           occupied: !!data?.occupied,
@@ -83,7 +83,7 @@ export default function Page() {
       setSeats(next);
     });
     return () => unsub();
-  }, [seatsCol]);
+  }, [seatsCol, initializeSeats]);
 
   // 着席/退席 トグル
   const toggleSeat = async (s: Seat) => {

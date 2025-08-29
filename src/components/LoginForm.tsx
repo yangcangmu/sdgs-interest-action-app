@@ -17,8 +17,9 @@ export default function LoginForm() {
 
     try {
       await signIn(email, password);
-    } catch (error: any) {
-      setError(error.message || 'ログインに失敗しました');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'ログインに失敗しました';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
