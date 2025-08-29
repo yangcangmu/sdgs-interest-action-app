@@ -42,7 +42,7 @@ export default function Page() {
     } catch (e) {
       console.error('[seats] initialize failed', e);
     }
-  }, [db, seats.length]);
+  }, [seats.length]);
 
   // 初回マウント時に空なら初期化（ワンショット）
   useEffect(() => {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp, Timestamp, DocumentData } from 'firebase/firestore';
 import { useAuth } from '@/contexts/AuthContext';
 
 type Announcement = {
@@ -22,12 +22,15 @@ export default function AnnouncementBoard() {
   useEffect(() => {
     const q = query(collection(db, 'announcements'), orderBy('createdAt', 'desc'), limit(20));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const announcementsList: Announcement[] = snapshot.docs.map(doc => ({
-        id: doc.id,
-        message: doc.data().message,
-        authorName: doc.data().authorName,
-        createdAt: doc.data().createdAt,
-      }));
+      const announcementsList: Announcement[] = snapshot.docs.map((docSnap) => {
+        const data = docSnap.data() as DocumentData;
+        return {
+          id: docSnap.id,
+          message: String(data.message ?? ''),
+          authorName: String(data.authorName ?? ''),
+          createdAt: (data.createdAt as Timestamp | undefined) ?? null,
+        };
+      });
       setAnnouncements(announcementsList);
     });
 
@@ -44,7 +47,7 @@ export default function AnnouncementBoard() {
         message: newMessage.trim(),
         authorName: user.displayName || user.email?.split('@')[0] || '匿名',
         createdAt: serverTimestamp(),
-      });
+      } satisfies { message: string; authorName: string; createdAt: ReturnType<typeof serverTimestamp> };
       setNewMessage('');
     } catch (error) {
       console.error('連絡事項の投稿に失敗しました:', error);
