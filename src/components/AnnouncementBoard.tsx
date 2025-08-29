@@ -9,7 +9,7 @@ type Announcement = {
   id: string;
   message: string;
   authorName: string;
-  createdAt: any;
+  createdAt: Timestamp | null;
 };
 
 export default function AnnouncementBoard() {
@@ -47,7 +47,7 @@ export default function AnnouncementBoard() {
         message: newMessage.trim(),
         authorName: user.displayName || user.email?.split('@')[0] || '匿名',
         createdAt: serverTimestamp(),
-      } satisfies { message: string; authorName: string; createdAt: ReturnType<typeof serverTimestamp> };
+      });
       setNewMessage('');
     } catch (error) {
       console.error('連絡事項の投稿に失敗しました:', error);
