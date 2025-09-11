@@ -1,0 +1,1031 @@
+{
+  "version": "1.0",
+  "locales": ["ja", "en"],
+  "questions": [
+    {
+      "id": "q01",
+      "title": {
+        "ja": "いま最も関心がある社会テーマは？",
+        "en": "Which social theme currently grabs you most?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "気候変動",
+            "en": "Climate action"
+          },
+          "sdgTags": [13]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "食品ロス・循環型消費",
+            "en": "Food waste & circular consumption"
+          },
+          "sdgTags": [12]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "教育の機会・学び",
+            "en": "Quality education & learning"
+          },
+          "sdgTags": [4]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "ジェンダー平等",
+            "en": "Gender equality"
+          },
+          "sdgTags": [5]
+        }
+      ]
+    },
+    {
+      "id": "q02",
+      "title": {
+        "ja": "週末に1時間だけ使えるなら？",
+        "en": "With just one hour this weekend, you'd…"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "電気・水の使い方を見直して記録",
+            "en": "Audit home energy/water and log it"
+          },
+          "sdgTags": [6, 7, 13]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "学内イベントでボランティア参加",
+            "en": "Volunteer at a campus event"
+          },
+          "sdgTags": [11, 17]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "フードバンク連携の告知を作って投稿",
+            "en": "Create a social post for a local food bank"
+          },
+          "sdgTags": [2, 12]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "省エネ家電や節電のコツを調べてまとめる",
+            "en": "Research efficient appliances & tips"
+          },
+          "sdgTags": [7, 9]
+        }
+      ]
+    },
+    {
+      "id": "q03",
+      "title": {
+        "ja": "ニュースでついクリックする見出しは？",
+        "en": "Which headline would you click?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "地元の防災・避難計画の改善",
+            "en": "Improving local disaster preparedness"
+          },
+          "sdgTags": [11, 13]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "国際会議で各国が合意・連携強化",
+            "en": "Global agreement at an international summit"
+          },
+          "sdgTags": [17, 13]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "暮らしの工夫でゴミ削減",
+            "en": "Cutting waste via lifestyle tweaks"
+          },
+          "sdgTags": [12]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "新しい環境技術の実証・導入",
+            "en": "Breakthrough tech gets real-world trial"
+          },
+          "sdgTags": [9]
+        }
+      ]
+    },
+    {
+      "id": "q04",
+      "title": {
+        "ja": "動き方のスタイルは？",
+        "en": "What's your default way to act?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "まずは自分で小さく始める",
+            "en": "Start small by yourself"
+          },
+          "sdgTags": [9]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "仲間を募って一緒に動く",
+            "en": "Rally friends and act together"
+          },
+          "sdgTags": [17]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "学生会・学務に提案を出す",
+            "en": "Propose to student union/administration"
+          },
+          "sdgTags": [16, 11]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "ひとまず情報収集してから",
+            "en": "Research first, then act"
+          },
+          "sdgTags": [4, 9]
+        }
+      ]
+    },
+    {
+      "id": "q05",
+      "title": {
+        "ja": "食生活でまず変えるなら？",
+        "en": "First tweak in your eating habits?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "買い過ぎを減らし食べ切る計画",
+            "en": "Plan meals to avoid overbuying"
+          },
+          "sdgTags": [2, 12]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "栄養バランスをアプリで管理",
+            "en": "Track nutrition with an app"
+          },
+          "sdgTags": [3, 2]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "フェアトレード商品を選ぶ",
+            "en": "Choose fair-trade products"
+          },
+          "sdgTags": [10, 12]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "学食にフードドネーション箱を提案",
+            "en": "Propose a food donation box on campus"
+          },
+          "sdgTags": [2, 11, 16]
+        }
+      ]
+    },
+    {
+      "id": "q06",
+      "title": {
+        "ja": "通学・移動の選び方は？",
+        "en": "How do you choose transportation?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "なるべく自転車・徒歩",
+            "en": "Prefer bike/walk"
+          },
+          "sdgTags": [11, 13]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "公共交通＋乗り合い",
+            "en": "Public transit & carpool"
+          },
+          "sdgTags": [11, 13]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "必要時のみ車、エコ運転",
+            "en": "Drive only when needed, eco-driving"
+          },
+          "sdgTags": [13, 12]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "電動モビリティやシェアを試す",
+            "en": "Try e-mobility & sharing"
+          },
+          "sdgTags": [9, 11, 13]
+        }
+      ]
+    },
+    {
+      "id": "q07",
+      "title": {
+        "ja": "お金の使い方で近いのは？",
+        "en": "Which spending choice feels right?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "長く使える質の良いものを選ぶ",
+            "en": "Buy durable, quality goods"
+          },
+          "sdgTags": [12, 8]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "省エネ投資（LED等）",
+            "en": "Invest in energy-saving tools"
+          },
+          "sdgTags": [7, 9]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "フェアトレード・エシカル消費",
+            "en": "Fair trade & ethical spending"
+          },
+          "sdgTags": [10, 12]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "寄付やクラファンで支援",
+            "en": "Donate or back a crowdfund"
+          },
+          "sdgTags": [1, 17]
+        }
+      ]
+    },
+    {
+      "id": "q08",
+      "title": {
+        "ja": "大学でやるならどれ？",
+        "en": "On campus, you would…"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "SDGs勉強会を開く",
+            "en": "Host an SDGs study group"
+          },
+          "sdgTags": [4, 17]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "省エネ可視化アプリを試作",
+            "en": "Prototype an energy dashboard"
+          },
+          "sdgTags": [7, 9, 13]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "学生会へ改善提案を提出",
+            "en": "Submit a policy proposal"
+          },
+          "sdgTags": [16, 11]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "地域清掃や緑化を主催",
+            "en": "Lead a cleanup/greening event"
+          },
+          "sdgTags": [11, 15]
+        }
+      ]
+    },
+    {
+      "id": "q09",
+      "title": {
+        "ja": "守りたい自然は？",
+        "en": "Which nature do you want to protect?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "海・沿岸",
+            "en": "Oceans & coasts"
+          },
+          "sdgTags": [14]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "森・山",
+            "en": "Forests & mountains"
+          },
+          "sdgTags": [15]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "都市の緑地",
+            "en": "Urban green spaces"
+          },
+          "sdgTags": [11, 15]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "河川・水辺",
+            "en": "Rivers & watersides"
+          },
+          "sdgTags": [6, 14]
+        }
+      ]
+    },
+    {
+      "id": "q10",
+      "title": {
+        "ja": "買い物での優先基準は？",
+        "en": "Your top shopping criterion?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "リペアしやすく長寿命",
+            "en": "Repairable & long-lasting"
+          },
+          "sdgTags": [12]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "省エネ性能が高い",
+            "en": "High energy efficiency"
+          },
+          "sdgTags": [7, 9]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "公正な労働環境の企業",
+            "en": "Fair labor practices"
+          },
+          "sdgTags": [8, 10]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "地元企業・ローカル優先",
+            "en": "Support local businesses"
+          },
+          "sdgTags": [8, 11]
+        }
+      ]
+    },
+    {
+      "id": "q11",
+      "title": {
+        "ja": "デジタルでの取り組みは？",
+        "en": "Your digital-first action would be…"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "節電リマインダーを導入/自作",
+            "en": "Build/use power-saving reminders"
+          },
+          "sdgTags": [7, 9, 13]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "啓発スレッドを企画・投稿",
+            "en": "Plan a social awareness thread"
+          },
+          "sdgTags": [16, 5, 10]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "学内データの可視化ダッシュボード",
+            "en": "Visualize campus sustainability data"
+          },
+          "sdgTags": [9, 11, 12]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "寄付プラットフォームを比較・まとめ",
+            "en": "Curate donation platforms"
+          },
+          "sdgTags": [1, 17]
+        }
+      ]
+    },
+    {
+      "id": "q12",
+      "title": {
+        "ja": "社会貢献のアプローチで近いのは？",
+        "en": "Which approach to impact suits you?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "低所得層の学習支援を継続",
+            "en": "Tutoring for low-income students"
+          },
+          "sdgTags": [1, 4, 10]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "環境系OSSにコントリビュート",
+            "en": "Contribute to enviro OSS"
+          },
+          "sdgTags": [9, 13, 17]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "学内ルール改善の署名・提案",
+            "en": "Petition & propose campus rules"
+          },
+          "sdgTags": [16, 11]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "地域菜園や配布に参加",
+            "en": "Join community garden/food share"
+          },
+          "sdgTags": [2, 11, 12]
+        }
+      ]
+    },
+    {
+      "id": "q13",
+      "title": {
+        "ja": "健康・福祉でまずやるなら？",
+        "en": "First step for health & well-being?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "睡眠・運動の習慣化",
+            "en": "Regular sleep & exercise"
+          },
+          "sdgTags": [3]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "メンタルヘルス窓口の周知",
+            "en": "Promote mental health resources"
+          },
+          "sdgTags": [3, 16]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "生理用品アクセス改善を提案",
+            "en": "Advocate for period product access"
+          },
+          "sdgTags": [5, 3, 10]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "安全な通学路のマッピング",
+            "en": "Map safer routes to campus"
+          },
+          "sdgTags": [11, 3]
+        }
+      ]
+    },
+    {
+      "id": "q14",
+      "title": {
+        "ja": "水の使い方でやってみたいのは？",
+        "en": "Water use: what would you try?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "シャワー時間を短縮・タイマー導入",
+            "en": "Shorter showers with a timer"
+          },
+          "sdgTags": [6]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "雨水活用・節水グッズ導入",
+            "en": "Try rainwater/capture devices"
+          },
+          "sdgTags": [6, 9]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "学内の漏水報告フロー整備",
+            "en": "Fix campus leak-reporting flow"
+          },
+          "sdgTags": [6, 11, 16]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "水質保全イベントに参加",
+            "en": "Join a water quality event"
+          },
+          "sdgTags": [6, 14]
+        }
+      ]
+    },
+    {
+      "id": "q15",
+      "title": {
+        "ja": "働きがい・経済で近いのは？",
+        "en": "Decent work & economy: choose one"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "グリーンジョブのインターン探し",
+            "en": "Seek a green jobs internship"
+          },
+          "sdgTags": [8, 9, 13]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "学生プロジェクトで起業体験",
+            "en": "Try a student startup project"
+          },
+          "sdgTags": [8, 9]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "キャンパスの適正賃金キャンペーン",
+            "en": "Living wage campaign on campus"
+          },
+          "sdgTags": [8, 10, 16]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "地域の中小企業を応援購入",
+            "en": "Support local SMEs"
+          },
+          "sdgTags": [8, 11]
+        }
+      ]
+    },
+    {
+      "id": "q16",
+      "title": {
+        "ja": "気候アクションの優先は？",
+        "en": "For climate action, what's your priority?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "省エネ・再エネで排出削減（緩和）",
+            "en": "Mitigate via efficiency & renewables"
+          },
+          "sdgTags": [7, 13, 9]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "熱波・豪雨への備え（適応）",
+            "en": "Adapt to heat/flood risks"
+          },
+          "sdgTags": [13, 3, 11]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "気候教育・情報リテラシー",
+            "en": "Climate education & literacy"
+          },
+          "sdgTags": [4, 13]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "政策提言・投票行動",
+            "en": "Policy advocacy & voting"
+          },
+          "sdgTags": [16, 13]
+        }
+      ]
+    },
+    {
+      "id": "q17",
+      "title": {
+        "ja": "不平等の是正で気になるのは？",
+        "en": "Which inequality issue concerns you most?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "所得格差・生活困窮の支援",
+            "en": "Support for low income households"
+          },
+          "sdgTags": [1, 10]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "障害当事者のアクセシビリティ",
+            "en": "Accessibility for disabled persons"
+          },
+          "sdgTags": [10, 11]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "ジェンダー・LGBTQ+の公平性",
+            "en": "Gender & LGBTQ+ equity"
+          },
+          "sdgTags": [5, 10]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "グローバルサウスへの支援連携",
+            "en": "Partner with the Global South"
+          },
+          "sdgTags": [10, 17]
+        }
+      ]
+    },
+    {
+      "id": "q18",
+      "title": {
+        "ja": "海の豊かさを守る行動なら？",
+        "en": "For oceans, what would you do?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "砂浜や河口のクリーンアップ",
+            "en": "Beach/estuary cleanups"
+          },
+          "sdgTags": [14, 11]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "使い捨てプラの削減を徹底",
+            "en": "Cut single-use plastics"
+          },
+          "sdgTags": [12, 14]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "市民科学で海洋データ収集",
+            "en": "Participate in marine citizen science"
+          },
+          "sdgTags": [14, 9]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "マイクロプラ規制の提案",
+            "en": "Advocate microplastics regulation"
+          },
+          "sdgTags": [14, 16]
+        }
+      ]
+    },
+    {
+      "id": "q19",
+      "title": {
+        "ja": "陸の豊かさで重視するのは？",
+        "en": "For life on land, what matters first?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "森林再生・植樹ボランティア",
+            "en": "Reforestation & tree-planting"
+          },
+          "sdgTags": [15, 13]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "野生生物の回廊づくり支援",
+            "en": "Support wildlife corridors"
+          },
+          "sdgTags": [15, 11]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "都市の生物多様性向上（花壇等）",
+            "en": "Boost urban biodiversity"
+          },
+          "sdgTags": [11, 15]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "農業の持続可能化（有機・土壌）",
+            "en": "Sustainable agriculture & soils"
+          },
+          "sdgTags": [2, 15, 12]
+        }
+      ]
+    },
+    {
+      "id": "q20",
+      "title": {
+        "ja": "教育分野でやるなら？",
+        "en": "In education, what would you do?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "初等〜高校向け出前授業",
+            "en": "Outreach classes for K–12"
+          },
+          "sdgTags": [4, 10]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "オープン教材を作って公開",
+            "en": "Create & publish OER"
+          },
+          "sdgTags": [4, 9, 17]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "学内の学習支援ルーム運営",
+            "en": "Run a campus learning support room"
+          },
+          "sdgTags": [4, 1]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "大学間連携の勉強会開催",
+            "en": "Host inter-university study groups"
+          },
+          "sdgTags": [4, 17]
+        }
+      ]
+    },
+    {
+      "id": "q21",
+      "title": {
+        "ja": "平和・公正で動くなら？",
+        "en": "For peace & justice, what would you do?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "相談/通報ルートの可視化",
+            "en": "Make reporting/helplines visible"
+          },
+          "sdgTags": [16, 11]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "ハラスメント防止の学内ルール整備",
+            "en": "Improve anti-harassment rules"
+          },
+          "sdgTags": [5, 16]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "データ公開・透明性の提案",
+            "en": "Propose open data & transparency"
+          },
+          "sdgTags": [16, 9]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "住民参加の対話イベント主催",
+            "en": "Host public dialogue events"
+          },
+          "sdgTags": [16, 11, 17]
+        }
+      ]
+    },
+    {
+      "id": "q22",
+      "title": {
+        "ja": "イノベーションで関わるなら？",
+        "en": "How would you engage with innovation?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "サステナ系ハッカソン参加",
+            "en": "Join a sustainability hackathon"
+          },
+          "sdgTags": [9, 13, 7]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "メーカーズスペースで試作",
+            "en": "Prototype in a makerspace"
+          },
+          "sdgTags": [9, 12]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "データ分析で課題を見える化",
+            "en": "Use data analysis to visualize issues"
+          },
+          "sdgTags": [9, 11, 12]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "最新研究を要約して共有",
+            "en": "Summarize & share recent research"
+          },
+          "sdgTags": [4, 9]
+        }
+      ]
+    },
+    {
+      "id": "q23",
+      "title": {
+        "ja": "パートナーシップの組み方は？",
+        "en": "How would you build partnerships?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "地域NPO/自治体と小さく始める",
+            "en": "Start small with local NPO/municipality"
+          },
+          "sdgTags": [17, 11]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "国際NGO/留学生と協働",
+            "en": "Collaborate with international NGOs/students"
+          },
+          "sdgTags": [17, 10]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "研究室・企業と産学連携",
+            "en": "University–industry collaboration"
+          },
+          "sdgTags": [17, 9]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "生活困窮者支援団体と連携",
+            "en": "Partner with orgs aiding low-income people"
+          },
+          "sdgTags": [17, 1, 2]
+        }
+      ]
+    },
+    {
+      "id": "q24",
+      "title": {
+        "ja": "ゼロウェイストなイベント運営、どれやる？",
+        "en": "Zero-waste event ops: what would you do?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "プレイブック策定（リユース導線）",
+            "en": "Create a zero-waste playbook"
+          },
+          "sdgTags": [12, 11]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "リユースカップ/食器システム導入",
+            "en": "Deploy reusable cups/tableware"
+          },
+          "sdgTags": [12, 11]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "備品レンタル/シェアの台帳化",
+            "en": "Ledger for renting/sharing equipment"
+          },
+          "sdgTags": [12, 11, 17]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "廃棄物監査で改善点を特定",
+            "en": "Run a waste audit to find fixes"
+          },
+          "sdgTags": [12, 9]
+        }
+      ]
+    },
+    {
+      "id": "q25",
+      "title": {
+        "ja": "空気の質、どこから着手？",
+        "en": "Air quality: where would you start?"
+      },
+      "options": [
+        {
+          "id": "a",
+          "label": {
+            "ja": "低コストセンサーの設置",
+            "en": "Install low-cost sensors"
+          },
+          "sdgTags": [3, 11, 9]
+        },
+        {
+          "id": "b",
+          "label": {
+            "ja": "自転車ルートの空気質マップ化",
+            "en": "Map air quality along bike routes"
+          },
+          "sdgTags": [11, 3, 9, 13]
+        },
+        {
+          "id": "c",
+          "label": {
+            "ja": "室内換気のチェックリスト運用",
+            "en": "Run an indoor ventilation checklist"
+          },
+          "sdgTags": [3, 11]
+        },
+        {
+          "id": "d",
+          "label": {
+            "ja": "アイドリングストップの呼びかけ",
+            "en": "Promote anti-idling behavior"
+          },
+          "sdgTags": [3, 11, 13, 16]
+        }
+      ]
+    }
+  ]
+}

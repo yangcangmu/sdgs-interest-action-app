@@ -1,362 +1,351 @@
 'use client';
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
-import { db } from '@/lib/firebase';
-import {
-  collection,
-  onSnapshot,
-  doc,
-  updateDoc,
-  writeBatch,
-  query,
-  orderBy,
-  getDocs,
-} from 'firebase/firestore';
-import { useAuth } from '@/contexts/AuthContext';
-import LoginForm from '@/components/LoginForm';
-import AnnouncementBoard from '@/components/AnnouncementBoard';
-
-type Seat = {
-  id: string;
-  occupied: boolean;
-  occupantName: string;
-};
+import React, { useState, useEffect, useRef } from 'react';
+import { Question, QuizSubmission, Locale, QuizResult } from '@/types';
+import { useTranslation } from '@/lib/i18n';
+import QuizContainer from '@/components/Quiz/QuizContainer';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import GoalsList from '@/components/Goals/GoalsList';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 export default function Page() {
-  const [seats, setSeats] = useState<Seat[]>([]);
-  const { user, loading, logout } = useAuth();
-  const seatsCol = useMemo(() => (db ? collection(db, 'seats') : null), []);
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [locale, setLocale] = useState<Locale>('ja');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [quizState, setQuizState] = useState<'welcome' | 'quiz' | 'results' | 'goals'>('welcome');
+  const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
+  const { t } = useTranslation(locale);
 
-  // 10席固定の座席データを初期化
-  const initializeSeats = useCallback(async () => {
-    if (!db || seats.length > 0) return;
-    try {
-      const batch = writeBatch(db);
-      for (let i = 1; i <= 10; i++) {
-        const seatId = `seat-${i.toString().padStart(2, '0')}`;
-        const seatRef = doc(db, 'seats', seatId);
-        batch.set(seatRef, { occupied: false, occupantName: '' });
-      }
-      await batch.commit();
-      console.log('[seats] initialized');
-    } catch (e) {
-      console.error('[seats] initialize failed', e);
-    }
-  }, [seats.length]);
-
-  // 初回マウント時に空なら初期化（ワンショット）
+  // 質問データを取得（初回のみ or locale変更時）
+  const didFetchRef = useRef(false);
   useEffect(() => {
-    const run = async () => {
-      if (!seatsCol) return;
+    if (didFetchRef.current) return;
+    didFetchRef.current = true;
+
+    const fetchQuestions = async () => {
       try {
-        const snap = await getDocs(seatsCol);
-        if (snap.empty) {
-          await initializeSeats();
+        setIsLoading(true);
+        const base = typeof window !== 'undefined' ? window.location.origin : '';
+        const response = await fetch(`${base}/api/quiz/questions`, {
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store',
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        if (data?.success && data?.data?.questions) {
+          setQuestions(data.data.questions);
+        } else {
+          setError(data?.error || 'Failed to load questions');
         }
-      } catch (e) {
-        console.error('[seats] pre-check failed', e);
+      } catch (err) {
+        console.error('Error fetching questions:', err);
+        setError(t('errors.networkError'));
+      } finally {
+        setIsLoading(false);
       }
     };
-    run();
-  }, [seatsCol, initializeSeats]);
 
-  // リアルタイム購読
-  useEffect(() => {
-    if (!seatsCol) return;
-    
-    // ID順に並べる（seat-01, seat-02, ...）
-    const q = query(seatsCol, orderBy('__name__'));
-    const unsub = onSnapshot(q, (snap) => {
-      if (snap.empty) {
-        // ドキュメントが存在しない場合は初期化
-        initializeSeats();
-        return;
-      }
-      const next: Seat[] = snap.docs.map((d) => {
-        const data = d.data() as { occupied?: boolean; occupantName?: string };
-        return {
-          id: d.id,
-          occupied: !!data?.occupied,
-          occupantName: data?.occupantName ?? '',
-        };
+    fetchQuestions();
+  }, [locale, t]);
+
+  const handleStartQuiz = () => {
+    setQuizState('quiz');
+  };
+
+  const handleQuizComplete = async (submissions: QuizSubmission[]) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/quiz/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          submissions,
+          sessionId: `session_${Date.now()}`,
+        }),
       });
-      setSeats(next);
-    });
-    return () => unsub();
-  }, [seatsCol, initializeSeats]);
 
-  // 着席/退席 トグル
-  const toggleSeat = async (s: Seat) => {
-    if (!db) return;
-    const ref = doc(db, 'seats', s.id);
-    if (s.occupied) {
-      // 退席
-      await updateDoc(ref, { occupied: false, occupantName: '' });
-    } else {
-      // 着席（名前入力は必須）
-      const name = window.prompt('お名前を入力してください', '');
-      if (name && name.trim()) {
-        await updateDoc(ref, { occupied: true, occupantName: name.trim() });
+      const data = await response.json();
+      
+      if (data.success) {
+        setQuizResult(data.data);
+        setQuizState('results');
+      } else {
+        setError(data.error || 'Failed to submit quiz');
       }
+    } catch (err) {
+      console.error('Error submitting quiz:', err);
+      setError(t('errors.networkError'));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // 全席リセット
-  const resetAll = async () => {
-    if (!db) return;
-    const batch = writeBatch(db);
-    seats.forEach((s) => {
-      const ref = doc(db, 'seats', s.id);
-      batch.update(ref, { occupied: false, occupantName: '' });
-    });
-    await batch.commit();
+  const handleQuizError = (error: string) => {
+    setError(error);
   };
 
-  // 使用中席数と総席数
-  const occupiedCount = seats.filter(s => s.occupied).length;
-  const totalSeats = 10;
+  const handleRetakeQuiz = () => {
+    setQuizState('quiz');
+    setQuizResult(null);
+  };
 
-  // 使用中の部員名一覧
-  const occupiedMembers = seats
-    .filter(s => s.occupied && s.occupantName)
-    .map(s => s.occupantName);
+  const handleSetGoals = () => {
+    setQuizState('goals');
+  };
 
-  // ローディング中
-  if (loading) {
+  const handleLocaleChange = (newLocale: Locale) => {
+    setLocale(newLocale);
+    // 言語変更時は質問を再取得
+    setQuestions([]);
+    didFetchRef.current = false;
+  };
+
+  if (isLoading && quizState === 'welcome') {
     return (
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh',
-        color: '#fff',
-        fontSize: 18
-      }}>
-        読み込み中...
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
 
-  // 未ログイン時はログインフォームを表示
-  if (!user) {
-    return <LoginForm />;
-  }
-
-  // ログイン済み時はメイン画面を表示
-  return (
-    <main style={{ padding: 24, color: '#eee', fontFamily: 'system-ui, sans-serif' }}>
-      {/* ヘッダー */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: 24,
-        paddingBottom: 16,
-        borderBottom: '1px solid #333'
-      }}>
-        <div>
-          <h1 style={{ fontSize: 24, margin: 0, color: '#fff' }}>
-            📚 漫画部屋管理システム
-          </h1>
-          <p style={{ margin: '8px 0 0 0', fontSize: 14, color: '#888' }}>
-            ようこそ、{user.displayName || user.email?.split('@')[0] || 'メンバー'}さん
-          </p>
-        </div>
-        <button
-          onClick={logout}
-          style={{
-            padding: '8px 16px',
-            background: '#dc3545',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 8,
-            cursor: 'pointer',
-            fontSize: 14
-          }}
-        >
-          ログアウト
-        </button>
-      </div>
-
-      {/* 座席状況サマリー */}
-      <div style={{ 
-        background: '#1b1b1b', 
-        borderRadius: 12, 
-        padding: 20,
-        marginBottom: 24,
-        border: '1px solid #2b2b2b'
-      }}>
-        <h3 style={{ 
-          marginBottom: 16, 
-          color: '#fff', 
-          fontSize: 18,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8
-        }}>
-          📊 座席状況サマリー
-        </h3>
-        
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center',
-          marginBottom: 16
-        }}>
-          <div style={{ fontSize: 24, fontWeight: 'bold', color: '#7CFC99' }}>
-            {occupiedCount}/{totalSeats}席使用中
-          </div>
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center p-8">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">
+            {t('common.error')}
+          </h2>
+          <p className="text-gray-600 mb-4">{error}</p>
           <button
-            onClick={resetAll}
-            style={{
-              padding: '8px 16px',
-              background: '#6c757d',
-              color: '#fff',
-              border: '1px solid #555',
-              cursor: 'pointer',
-              fontSize: 14
-            }}
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
-            全席リセット
+            {t('common.retry')}
           </button>
         </div>
+      </div>
+    );
+  }
 
-        {/* 使用中の部員名一覧 */}
-        {occupiedMembers.length > 0 && (
-          <div style={{ marginTop: 16 }}>
-            <h4 style={{ 
-              marginBottom: 12, 
-              color: '#ccc', 
-              fontSize: 16 
-            }}>
-              🧑‍🤝‍🧑 現在使用中の部員
-            </h4>
-            <div style={{ 
-              display: 'flex', 
-              flexWrap: 'wrap', 
-              gap: 8 
-            }}>
-              {occupiedMembers.map((name, index) => (
-                <span
-                  key={index}
-                  style={{
-                    padding: '6px 12px',
-                    background: '#28a745',
-                    color: '#fff',
-                    borderRadius: 20,
-                    fontSize: 14,
-                    fontWeight: 'bold'
-                  }}
-                >
-                  {name}
-                </span>
-              ))}
+  if (quizState === 'quiz') {
+    return (
+      <QuizContainer
+        questions={questions}
+        locale={locale}
+        onComplete={handleQuizComplete}
+        onError={handleQuizError}
+        onLocaleChange={handleLocaleChange}
+      />
+    );
+  }
+
+  if (quizState === 'goals') {
+    return (
+      <GoalsList
+        locale={locale}
+        sessionId={`session_${Date.now()}`}
+        onLocaleChange={handleLocaleChange}
+      />
+    );
+  }
+
+
+  if (quizState === 'results' && quizResult) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* 言語切り替えボタン */}
+        <div className="absolute top-4 right-4 z-10">
+          <LanguageSwitcher 
+            locale={locale} 
+            onLocaleChange={handleLocaleChange}
+          />
+        </div>
+        
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">
+              {t('results.title')}
+            </h1>
+            
+            {/* 全体スコア */}
+            <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">
+                {t('results.overallScore')}
+              </h2>
+              <div className="text-center">
+                <div className="text-6xl font-bold text-blue-600 mb-2">
+                  {quizResult.overall_interest}
+                </div>
+                <div className="text-gray-800">/ 100</div>
+              </div>
+            </div>
+
+            {/* SDGプロフィール */}
+            <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                {t('results.sdgProfile')}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {Object.entries(quizResult.sdg_scores_norm).map(([sdg, score]) => (
+                  <div key={sdg} className="p-4 border rounded-lg">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-gray-900">SDG {sdg}</span>
+                      <span className="text-lg font-bold text-blue-700">{score}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div
+                        className="bg-blue-700 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${score}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Top3 & Bottom3 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">
+                  {t('results.top3')}
+                </h3>
+                <div className="space-y-2">
+                  {quizResult.top3.map((sdg, index) => (
+                    <div key={sdg} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                      <span className="font-semibold text-gray-900">SDG {sdg}</span>
+                      <span className="text-green-700 font-bold">
+                        {quizResult.sdg_scores_norm[sdg.toString()]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 text-center">
+                  {t('results.bottom3')}
+                </h3>
+                <div className="space-y-2">
+                  {quizResult.bottom3.map((sdg, index) => (
+                    <div key={sdg} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <span className="font-semibold text-gray-900">SDG {sdg}</span>
+                      <span className="text-gray-800 font-bold">
+                        {quizResult.sdg_scores_norm[sdg.toString()]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* アクション推奨 */}
+            <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+                {t('results.actionRecommendations')}
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {quizResult.actionRecommendations.map((action) => (
+                  <div key={action.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
+                    <h3 className="font-semibold text-gray-900 mb-2">
+                      {action.title[locale]}
+                    </h3>
+                    <p className="text-sm text-gray-800 mb-3">
+                      {action.description[locale]}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-blue-700 font-medium">
+                        {action.estimatedTime}
+                      </span>
+                      <span className="text-xs text-gray-700">
+                        {action.difficulty}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* アクションボタン */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={handleSetGoals}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              >
+                {t('results.setGoals')}
+              </button>
+              <button
+                onClick={handleRetakeQuiz}
+                className="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
+              >
+                {t('results.retakeQuiz')}
+              </button>
             </div>
           </div>
-        )}
-      </div>
-
-      {/* 全体連絡掲示板 */}
-      <AnnouncementBoard />
-
-      {/* 座席一覧 */}
-      <div style={{ 
-        background: '#1b1b1b', 
-        borderRadius: 12, 
-        padding: 20,
-        border: '1px solid #2b2b2b'
-      }}>
-        <h3 style={{ 
-          marginBottom: 16, 
-          color: '#fff', 
-          fontSize: 18,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8
-        }}>
-          🪑 座席一覧
-        </h3>
-
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: 12
-        }}>
-          {seats.map((s) => (
-            <div
-              key={s.id}
-              onClick={() => toggleSeat(s)}
-              title={s.occupied ? `使用中: ${s.occupantName}（クリックで退席）` : '空席（クリックで着席）'}
-              style={{
-                padding: '16px',
-                borderRadius: 10,
-                background: s.occupied ? '#2b2b2b' : '#1b1b1b',
-                border: `2px solid ${s.occupied ? '#ff6b6b' : '#7CFC99'}`,
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                textAlign: 'center'
-              }}
-            >
-              <div style={{ 
-                fontSize: 18, 
-                fontWeight: 'bold', 
-                marginBottom: 8,
-                color: s.occupied ? '#ff6b6b' : '#7CFC99'
-              }}>
-                {s.id}
-              </div>
-              <div style={{ 
-                fontSize: 16,
-                color: s.occupied ? '#fff' : '#888',
-                marginBottom: 8
-              }}>
-                {s.occupied ? '使用中' : '空席'}
-              </div>
-              {s.occupied && s.occupantName && (
-                <div style={{ 
-                  fontSize: 14,
-                  color: '#007bff',
-                  fontWeight: 'bold'
-                }}>
-                  {s.occupantName}
-                </div>
-              )}
-            </div>
-          ))}
         </div>
-
-        {seats.length === 0 && (
-          <p style={{ 
-            textAlign: 'center', 
-            color: '#888', 
-            fontSize: 14,
-            padding: '20px 0'
-          }}>
-            座席データを初期化中...
-            <br/>
-            しばらく経っても表示されない場合は、下のボタンで手動初期化してください。
-            <br/>
-            <button
-              onClick={initializeSeats}
-              style={{
-                marginTop: 12,
-                padding: '8px 12px',
-                borderRadius: 8,
-                background: '#007bff',
-                color: '#fff',
-                border: 'none',
-                cursor: 'pointer'
-              }}
-            >
-              座席を手動初期化
-            </button>
-          </p>
-        )}
-
-        <p style={{ marginTop: 16, fontSize: 12, opacity: 0.6 }}>
-          ※ 座席をクリックすると着席/退席を切り替えできます。
-        </p>
       </div>
-    </main>
+    );
+  }
+
+
+  // ウェルカム画面
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* 言語切り替えボタン */}
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher 
+          locale={locale} 
+          onLocaleChange={handleLocaleChange}
+        />
+      </div>
+      
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            🌍 {t('onboarding.title')}
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            {t('onboarding.description')}
+          </p>
+          
+          <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              {t('quiz.title')}
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {t('quiz.subtitle')}
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600 mb-2">25</div>
+                <div className="text-gray-600">{t('onboarding.features.questions')}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-600 mb-2">3-5</div>
+                <div className="text-gray-600">{t('onboarding.features.time')}</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-purple-600 mb-2">17</div>
+                <div className="text-gray-600">{t('onboarding.features.analysis')}</div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleStartQuiz}
+              className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+            >
+              {t('onboarding.startQuiz')}
+            </button>
+          </div>
+
+          <div className="text-sm text-gray-500">
+            {t('onboarding.consent')}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
