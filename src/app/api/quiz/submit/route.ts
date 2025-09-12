@@ -4,8 +4,6 @@ import { calculateQuizScores } from '@/lib/scoring';
 import questionsData from '@/data/questions.v1.0.json';
 import { QuizResult, ApiResponse } from '@/types';
 
-export const dynamic = 'force-static';
-
 // バリデーションスキーマ
 const QuizSubmissionSchema = z.object({
   questionId: z.string(),
