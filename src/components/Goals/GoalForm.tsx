@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Goal, Cadence, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
-import { X, Plus, Calendar, Target, Tag } from 'lucide-react';
+import { X, Target } from 'lucide-react';
 
 interface GoalFormProps {
   locale: Locale;

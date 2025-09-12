@@ -16,7 +16,7 @@ export default function LanguageSwitcher({
   onLocaleChange, 
   className = '' 
 }: LanguageSwitcherProps) {
-  const { t } = useTranslation(locale);
+  // const { t } = useTranslation(locale);
   const [isOpen, setIsOpen] = React.useState(false);
 
   const languages = [

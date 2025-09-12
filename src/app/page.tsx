@@ -213,7 +213,7 @@ export default function Page() {
                   {t('results.top3')}
                 </h3>
                 <div className="space-y-2">
-                  {quizResult.top3.map((sdg, index) => (
+                  {quizResult.top3.map((sdg) => (
                     <div key={sdg} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                       <span className="font-semibold text-gray-900">SDG {sdg}</span>
                       <span className="text-green-700 font-bold">
@@ -229,7 +229,7 @@ export default function Page() {
                   {t('results.bottom3')}
                 </h3>
                 <div className="space-y-2">
-                  {quizResult.bottom3.map((sdg, index) => (
+                  {quizResult.bottom3.map((sdg) => (
                     <div key={sdg} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <span className="font-semibold text-gray-900">SDG {sdg}</span>
                       <span className="text-gray-800 font-bold">

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { calculateQuizScores } from '@/lib/scoring';
 import questionsData from '@/data/questions.v1.0.json';
-import { QuizSubmission, QuizResult, ApiResponse } from '@/types';
+import { QuizResult, ApiResponse } from '@/types';
 
 // バリデーションスキーマ
 const QuizSubmissionSchema = z.object({
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     
     // リクエストボディをバリデーション
     const validatedData = QuizSubmitRequestSchema.parse(body);
-    const { submissions, sessionId } = validatedData;
+    const { submissions } = validatedData;
 
     // 質問データを取得
     const questions = questionsData.questions;

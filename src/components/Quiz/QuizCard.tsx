@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Question, Option, Intensity, Locale } from '@/types';
+import { Question, Intensity, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
 import { ChevronLeft, ChevronRight, SkipForward } from 'lucide-react';
 
@@ -31,7 +31,7 @@ export default function QuizCard({
   onSkip,
   onNext,
   onPrevious,
-  canGoNext,
+  // canGoNext,
   canGoPrevious,
   initialAnswer,
 }: QuizCardProps) {

@@ -141,13 +141,13 @@ export class ScoringEngine {
 
     // 正規化スコアの分布を確認
     const validScores = Object.entries(normScores)
-      .filter(([_, score]) => score > 0)
+      .filter(([, score]) => score > 0)
       .map(([sdg, score]) => ({ sdg: parseInt(sdg), score }))
       .sort((a, b) => b.score - a.score);
     
     console.log('=== 正規化スコア分布（降順） ===');
-    validScores.forEach(({ sdg, score }, index) => {
-      console.log(`${index + 1}. SDG ${sdg}: ${score}`);
+    validScores.forEach(({ sdg }, index) => {
+      console.log(`${index + 1}. SDG ${sdg}: ${validScores[index].score}`);
     });
 
     return normScores;
@@ -175,7 +175,7 @@ export class ScoringEngine {
 
     // 17個のSDGを正規化スコアの高い順にランキング作成
     const ranking = Object.entries(normScores)
-      .filter(([sdg, score]) => expScores[parseInt(sdg)] > 0) // exposure > 0のもののみ
+      .filter(([sdg]) => expScores[parseInt(sdg)] > 0) // exposure > 0のもののみ
       .map(([sdg, score]) => ({ sdg: parseInt(sdg), score }))
       .sort((a, b) => b.score - a.score); // 正規化スコア降順でランキング
     
@@ -200,7 +200,7 @@ export class ScoringEngine {
 
     // 17個のSDGを正規化スコアの高い順にランキング作成（Top3と同じ）
     const ranking = Object.entries(normScores)
-      .filter(([sdg, score]) => expScores[parseInt(sdg)] > 0) // exposure > 0のもののみ
+      .filter(([sdg]) => expScores[parseInt(sdg)] > 0) // exposure > 0のもののみ
       .map(([sdg, score]) => ({ sdg: parseInt(sdg), score }))
       .sort((a, b) => b.score - a.score); // 正規化スコア降順でランキング
     

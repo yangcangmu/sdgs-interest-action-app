@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Question, QuizSubmission, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
 import QuizCard from './QuizCard';
@@ -31,7 +31,7 @@ export default function QuizContainer({
   const { t } = useTranslation(locale);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Map<string, Answer>>(new Map());
-  const [skippedQuestions, setSkippedQuestions] = useState<Set<string>>(new Set());
+  // const [skippedQuestions, setSkippedQuestions] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
 
   const currentQuestion = questions[currentQuestionIndex];

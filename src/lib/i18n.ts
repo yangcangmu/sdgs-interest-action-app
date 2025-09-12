@@ -375,26 +375,36 @@ export const messages = {
 // 国際化フック
 export function useTranslation(locale: Locale = 'ja') {
   const t = (key: string, params?: Record<string, string | number>): string => {
-    const keys = key.split('.');
-    let value: unknown = messages[locale];
+    try {
+      const keys = key.split('.');
+      let value: any = messages[locale];
+      
+      for (const k of keys) {
+        if (value && typeof value === 'object' && k in value) {
+          value = value[k];
+        } else {
+          console.warn(`Translation key not found: ${key}`);
+          return key;
+        }
+      }
+      
+      if (typeof value !== 'string') {
+        console.warn(`Translation key not found: ${key}`);
+        return key;
+      }
     
-    for (const k of keys) {
-      value = value?.[k];
-    }
-    
-    if (typeof value !== 'string') {
-      console.warn(`Translation key not found: ${key}`);
+      // パラメータ置換
+      if (params) {
+        return value.replace(/\{(\w+)\}/g, (match, paramKey) => {
+          return params[paramKey]?.toString() || match;
+        });
+      }
+      
+      return value;
+    } catch (error) {
+      console.warn(`Translation error for key: ${key}`, error);
       return key;
     }
-    
-    // パラメータ置換
-    if (params) {
-      return value.replace(/\{(\w+)\}/g, (match, paramKey) => {
-        return params[paramKey]?.toString() || match;
-      });
-    }
-    
-    return value;
   };
   
   return { t, locale };
