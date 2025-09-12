@@ -377,11 +377,11 @@ export function useTranslation(locale: Locale = 'ja') {
   const t = (key: string, params?: Record<string, string | number>): string => {
     try {
       const keys = key.split('.');
-      let value: any = messages[locale];
+      let value: unknown = messages[locale];
       
       for (const k of keys) {
-        if (value && typeof value === 'object' && k in value) {
-          value = value[k];
+        if (value && typeof value === 'object' && value !== null && k in value) {
+          value = (value as Record<string, unknown>)[k];
         } else {
           console.warn(`Translation key not found: ${key}`);
           return key;
