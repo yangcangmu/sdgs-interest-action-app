@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Goal, Checkin, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
 import { Plus, Edit, Trash2, Calendar, Target, CheckCircle, Circle } from 'lucide-react';
@@ -23,7 +23,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange }: GoalsLi
   const [error, setError] = useState<string | null>(null);
 
   // 目標を取得
-  const fetchGoals = async () => {
+  const fetchGoals = useCallback(async () => {
     try {
       const response = await fetch(`/api/goals?sessionId=${sessionId}`);
       const data = await response.json();
@@ -37,10 +37,10 @@ export default function GoalsList({ locale, sessionId, onLocaleChange }: GoalsLi
       console.error('Error fetching goals:', err);
       setError('Failed to fetch goals');
     }
-  };
+  }, [sessionId]);
 
   // チェックインを取得
-  const fetchCheckins = async () => {
+  const fetchCheckins = useCallback(async () => {
     try {
       const response = await fetch(`/api/checkins?sessionId=${sessionId}`);
       const data = await response.json();
@@ -51,7 +51,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange }: GoalsLi
     } catch (err) {
       console.error('Error fetching checkins:', err);
     }
-  };
+  }, [sessionId]);
 
   useEffect(() => {
     const loadData = async () => {

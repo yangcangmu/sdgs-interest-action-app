@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Locale } from '@/types';
-import { useTranslation } from '@/lib/i18n';
+// import { useTranslation } from '@/lib/i18n';
 import { Globe, Check } from 'lucide-react';
 
 interface LanguageSwitcherProps {

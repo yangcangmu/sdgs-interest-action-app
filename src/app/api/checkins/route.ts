@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { Checkin, ApiResponse } from '@/types';
 
+export const dynamic = 'force-static';
+
 // バリデーションスキーマ
 const CheckinCreateSchema = z.object({
   goalId: z.string(),

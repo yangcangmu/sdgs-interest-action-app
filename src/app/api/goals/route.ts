@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { Goal, ApiResponse } from '@/types';
 
+export const dynamic = 'force-static';
+
 // バリデーションスキーマ
 const GoalCreateSchema = z.object({
   title: z.string().min(1, 'Title is required'),
