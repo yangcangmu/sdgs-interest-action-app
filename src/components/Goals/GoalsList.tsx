@@ -61,7 +61,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange }: GoalsLi
     };
     
     loadData();
-  }, [sessionId]);
+  }, [sessionId, fetchGoals, fetchCheckins]);
 
   // 目標を作成
   const handleCreateGoal = async (goalData: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>) => {

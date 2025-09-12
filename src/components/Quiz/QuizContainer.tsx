@@ -49,7 +49,6 @@ export default function QuizContainer({
   };
 
   const handleSkip = (questionId: string) => {
-    setSkippedQuestions(prev => new Set(prev).add(questionId));
     // スキップした質問の回答を削除
     setAnswers(prev => {
       const newAnswers = new Map(prev);
