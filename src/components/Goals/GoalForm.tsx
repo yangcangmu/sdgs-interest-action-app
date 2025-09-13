@@ -86,9 +86,9 @@ const GoalForm = React.memo(function GoalForm({
     if (onSaveDraft) {
       const draftData = {
         ...newFormData,
-        startAt: newFormData.startAt instanceof Date ? 
-          newFormData.startAt : 
-          new Date(newFormData.startAt)
+        startAt: typeof newFormData.startAt === 'string' ? 
+          new Date(newFormData.startAt) : 
+          newFormData.startAt
       };
       onSaveDraft(draftData);
     }
@@ -112,9 +112,9 @@ const GoalForm = React.memo(function GoalForm({
     if (onSaveDraft) {
       const draftData = {
         ...newFormData,
-        startAt: newFormData.startAt instanceof Date ? 
-          newFormData.startAt : 
-          new Date(newFormData.startAt)
+        startAt: typeof newFormData.startAt === 'string' ? 
+          new Date(newFormData.startAt) : 
+          newFormData.startAt
       };
       onSaveDraft(draftData);
     }
