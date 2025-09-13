@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Goal, Checkin, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
 import { Plus, Edit, Trash2, Calendar, Target, CheckCircle, Circle } from 'lucide-react';

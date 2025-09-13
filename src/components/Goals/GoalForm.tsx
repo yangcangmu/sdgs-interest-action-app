@@ -49,7 +49,7 @@ const GoalForm = React.memo(function GoalForm({
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    sdgTags: [],
+    sdgTags: [] as number[],
     cadence: 'daily' as Cadence,
     targetPerWeek: 1,
     startAt: new Date().toISOString().split('T')[0],
