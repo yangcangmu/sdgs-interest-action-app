@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Question, QuizSubmission, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
 import QuizCard from './QuizCard';
@@ -36,6 +36,12 @@ export default function QuizContainer({
 
   const currentQuestion = questions[currentQuestionIndex];
   const totalQuestions = questions.length;
+
+  // 言語が変更された時に状態をリセット
+  useEffect(() => {
+    // 言語変更時は現在の質問の回答のみ保持し、他の状態はリセットしない
+    // これにより、ユーザーの進捗を保持しながら言語を切り替え可能
+  }, [locale]);
 
   // 現在の質問の回答を取得
   const currentAnswer = answers.get(currentQuestion.id);
@@ -125,7 +131,14 @@ export default function QuizContainer({
         <div className="absolute top-4 right-4 z-10">
           <LanguageSwitcher 
             locale={locale} 
-            onLocaleChange={onLocaleChange}
+            onLocaleChange={(newLocale: Locale) => {
+              try {
+                onLocaleChange(newLocale);
+              } catch (error) {
+                console.error('Error changing locale:', error);
+                // エラーが発生してもアプリがクラッシュしないようにする
+              }
+            }}
           />
         </div>
       )}

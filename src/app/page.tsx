@@ -10,7 +10,7 @@ import LanguageSwitcher from '@/components/common/LanguageSwitcher';
 
 export default function Page() {
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [locale, setLocale] = useState<Locale>('ja');
+  const [locale, setLocale] = useState<Locale>('en');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [quizState, setQuizState] = useState<'welcome' | 'quiz' | 'results' | 'goals'>('welcome');
@@ -97,10 +97,15 @@ export default function Page() {
   };
 
   const handleLocaleChange = (newLocale: Locale) => {
-    setLocale(newLocale);
-    // 言語変更時は質問を再取得
-    setQuestions([]);
-    didFetchRef.current = false;
+    try {
+      setLocale(newLocale);
+      // 言語変更時は質問を再取得
+      setQuestions([]);
+      didFetchRef.current = false;
+    } catch (error) {
+      console.error('Error changing locale:', error);
+      // エラーが発生してもアプリがクラッシュしないようにする
+    }
   };
 
   if (isLoading && quizState === 'welcome') {

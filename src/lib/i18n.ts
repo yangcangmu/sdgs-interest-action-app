@@ -373,7 +373,7 @@ export const messages = {
 };
 
 // 国際化フック
-export function useTranslation(locale: Locale = 'ja') {
+export function useTranslation(locale: Locale = 'en') {
   const t = (key: string, params?: Record<string, string | number>): string => {
     try {
       const keys = key.split('.');
@@ -411,7 +411,7 @@ export function useTranslation(locale: Locale = 'ja') {
 }
 
 // デフォルトロケール
-export const defaultLocale: Locale = 'ja';
+export const defaultLocale: Locale = 'en';
 
 // 利用可能なロケール
 export const availableLocales: Locale[] = ['ja', 'en'];
