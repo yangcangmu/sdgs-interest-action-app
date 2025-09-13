@@ -153,7 +153,7 @@ export default function Page() {
         locale={locale}
         sessionId={`session_${Date.now()}`}
         onLocaleChange={handleLocaleChange}
-        onBackToQuiz={() => setQuizState('quiz')}
+        onBackToQuiz={() => setQuizState('results')}
       />
     );
   }

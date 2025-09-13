@@ -42,13 +42,17 @@ export default function QuizContainer({
     // 言語変更時は現在の質問の回答のみ保持し、他の状態はリセットしない
     // これにより、ユーザーの進捗を保持しながら言語を切り替え可能
     // ただし、質問データが変更された場合は現在の質問インデックスを調整
-    if (questions.length > 0 && currentQuestionIndex >= questions.length) {
-      setCurrentQuestionIndex(questions.length - 1);
+    if (questions.length > 0) {
+      if (currentQuestionIndex >= questions.length) {
+        setCurrentQuestionIndex(questions.length - 1);
+      } else if (currentQuestionIndex < 0) {
+        setCurrentQuestionIndex(0);
+      }
     }
-  }, [locale, questions.length, currentQuestionIndex]);
+  }, [questions.length, currentQuestionIndex]);
 
   // 現在の質問の回答を取得
-  const currentAnswer = answers.get(currentQuestion.id);
+  const currentAnswer = currentQuestion ? answers.get(currentQuestion.id) : undefined;
 
   const handleAnswer = (questionId: string, optionId: string, intensity: number) => {
     setAnswers(prev => new Map(prev).set(questionId, {
@@ -140,6 +144,11 @@ export default function QuizContainer({
                 // 言語切り替え前に現在の回答を保存
                 const currentAnswers = Array.from(answers.values());
                 console.log('Saving current answers before locale change:', currentAnswers.length);
+                
+                // 現在の質問インデックスを安全に保持
+                const safeIndex = Math.max(0, Math.min(currentQuestionIndex, questions.length - 1));
+                setCurrentQuestionIndex(safeIndex);
+                
                 onLocaleChange(newLocale);
               } catch (error) {
                 console.error('Error changing locale:', error);

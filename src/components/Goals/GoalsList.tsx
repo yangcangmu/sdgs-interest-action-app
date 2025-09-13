@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Goal, Checkin, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
 import { Plus, Edit, Trash2, Calendar, Target, CheckCircle, Circle } from 'lucide-react';
@@ -22,6 +22,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
   const [showGoalForm, setShowGoalForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [draftGoal, setDraftGoal] = useState<Partial<Goal> | null>(null);
 
   // 目標を取得
   const fetchGoals = useCallback(async () => {
@@ -78,6 +79,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
       if (data.success) {
         setGoals(prev => [...prev, data.data]);
         setShowGoalForm(false);
+        setDraftGoal(null); // ドラフトをクリア
       } else {
         setError(data.error);
       }
@@ -105,6 +107,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
           goal.id === editingGoal.id ? data.data : goal
         ));
         setEditingGoal(null);
+        setDraftGoal(null); // ドラフトをクリア
       } else {
         setError(data.error);
       }
@@ -185,6 +188,20 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
     }
   };
 
+  // フォームのキャンセル処理
+  const handleCancelForm = useCallback(() => {
+    setShowGoalForm(false);
+    setEditingGoal(null);
+    // ドラフトは保持（次回開いた時に復元される）
+    console.log('Form cancelled, draft kept:', draftGoal);
+  }, [draftGoal]);
+
+  // フォームのドラフト保存
+  const handleSaveDraft = useCallback((goalData: Partial<Goal>) => {
+    console.log('Saving draft:', goalData);
+    setDraftGoal(goalData);
+  }, []);
+
   // 今日の日付
   const today = new Date().toISOString().split('T')[0];
 
@@ -232,7 +249,10 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
             />
           )}
           <button
-            onClick={() => setShowGoalForm(true)}
+            onClick={() => {
+              console.log('Opening form with draft:', draftGoal);
+              setShowGoalForm(true);
+            }}
             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -257,7 +277,10 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
             {t('goals.createFirstGoal')}
           </p>
           <button
-            onClick={() => setShowGoalForm(true)}
+            onClick={() => {
+              console.log('Opening form with draft:', draftGoal);
+              setShowGoalForm(true);
+            }}
             className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             {t('goals.createFirstGoal')}
@@ -361,7 +384,9 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
         <GoalForm
           locale={locale}
           onSave={handleCreateGoal}
-          onCancel={() => setShowGoalForm(false)}
+          onCancel={handleCancelForm}
+          onSaveDraft={handleSaveDraft}
+          initialGoal={draftGoal}
         />
       )}
 
@@ -370,7 +395,8 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
         <GoalForm
           locale={locale}
           onSave={handleUpdateGoal}
-          onCancel={() => setEditingGoal(null)}
+          onCancel={handleCancelForm}
+          onSaveDraft={handleSaveDraft}
           initialGoal={editingGoal}
           isEditing={true}
         />

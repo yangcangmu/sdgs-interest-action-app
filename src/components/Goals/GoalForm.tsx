@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Goal, Cadence, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
 import { X, Target } from 'lucide-react';
@@ -9,6 +9,7 @@ interface GoalFormProps {
   locale: Locale;
   onSave: (goal: Omit<Goal, 'id' | 'createdAt' | 'updatedAt'>) => void;
   onCancel: () => void;
+  onSaveDraft?: (goal: Partial<Goal>) => void;
   initialGoal?: Partial<Goal>;
   isEditing?: boolean;
 }
@@ -33,43 +34,90 @@ const SDG_OPTIONS = [
   { value: 17, label: 'パートナーシップで目標を達成しよう', color: 'bg-blue-700' },
 ];
 
-export default function GoalForm({ 
+const GoalForm = React.memo(function GoalForm({ 
   locale, 
   onSave, 
   onCancel, 
+  onSaveDraft,
   initialGoal,
   isEditing = false 
 }: GoalFormProps) {
   const { t } = useTranslation(locale);
+  
+  console.log('GoalForm initialized with initialGoal:', initialGoal);
+  
   const [formData, setFormData] = useState({
-    title: initialGoal?.title || '',
-    description: initialGoal?.description || '',
-    sdgTags: initialGoal?.sdgTags || [],
-    cadence: (initialGoal?.cadence || 'daily') as Cadence,
-    targetPerWeek: initialGoal?.targetPerWeek || 1,
-    startAt: initialGoal?.startAt ? 
-      initialGoal.startAt.toISOString().split('T')[0] : 
-      new Date().toISOString().split('T')[0],
-    isActive: initialGoal?.isActive ?? true,
+    title: '',
+    description: '',
+    sdgTags: [],
+    cadence: 'daily' as Cadence,
+    targetPerWeek: 1,
+    startAt: new Date().toISOString().split('T')[0],
+    isActive: true,
   });
+
+  // initialGoalが変更された時にフォームデータを更新
+  useEffect(() => {
+    if (initialGoal) {
+      console.log('Updating form data with initialGoal:', initialGoal);
+      setFormData({
+        title: initialGoal.title || '',
+        description: initialGoal.description || '',
+        sdgTags: initialGoal.sdgTags || [],
+        cadence: (initialGoal.cadence || 'daily') as Cadence,
+        targetPerWeek: initialGoal.targetPerWeek || 1,
+        startAt: initialGoal.startAt ? 
+          (initialGoal.startAt instanceof Date ? 
+            initialGoal.startAt.toISOString().split('T')[0] : 
+            new Date(initialGoal.startAt).toISOString().split('T')[0]) : 
+          new Date().toISOString().split('T')[0],
+        isActive: initialGoal.isActive ?? true,
+      });
+    }
+  }, [initialGoal]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleInputChange = (field: string, value: string | number | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = useCallback((field: string, value: string | number | boolean) => {
+    const newFormData = { ...formData, [field]: value };
+    setFormData(newFormData);
+    
+    // ドラフトを保存（日付は文字列として保存）
+    if (onSaveDraft) {
+      const draftData = {
+        ...newFormData,
+        startAt: newFormData.startAt instanceof Date ? 
+          newFormData.startAt : 
+          new Date(newFormData.startAt)
+      };
+      onSaveDraft(draftData);
+    }
+    
     // エラーをクリア
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
-  };
+  }, [formData, onSaveDraft, errors]);
 
   const handleSdgTagToggle = (sdgValue: number) => {
-    setFormData(prev => ({
-      ...prev,
-      sdgTags: prev.sdgTags.includes(sdgValue)
-        ? prev.sdgTags.filter(tag => tag !== sdgValue)
-        : [...prev.sdgTags, sdgValue]
-    }));
+    const newFormData = {
+      ...formData,
+      sdgTags: formData.sdgTags.includes(sdgValue)
+        ? formData.sdgTags.filter(tag => tag !== sdgValue)
+        : [...formData.sdgTags, sdgValue]
+    };
+    setFormData(newFormData);
+    
+    // ドラフトを保存（日付は文字列として保存）
+    if (onSaveDraft) {
+      const draftData = {
+        ...newFormData,
+        startAt: newFormData.startAt instanceof Date ? 
+          newFormData.startAt : 
+          new Date(newFormData.startAt)
+      };
+      onSaveDraft(draftData);
+    }
   };
 
   const validateForm = () => {
@@ -274,4 +322,6 @@ export default function GoalForm({
       </div>
     </div>
   );
-}
+});
+
+export default GoalForm;
