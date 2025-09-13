@@ -11,9 +11,10 @@ interface GoalsListProps {
   locale: Locale;
   sessionId: string;
   onLocaleChange?: (locale: Locale) => void;
+  onBackToQuiz?: () => void;
 }
 
-export default function GoalsList({ locale, sessionId, onLocaleChange }: GoalsListProps) {
+export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQuiz }: GoalsListProps) {
   const { t } = useTranslation(locale);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [checkins, setCheckins] = useState<Checkin[]>([]);
@@ -212,7 +213,17 @@ export default function GoalsList({ locale, sessionId, onLocaleChange }: GoalsLi
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">{t('goals.title')}</h1>
+        <div className="flex items-center space-x-4">
+          {onBackToQuiz && (
+            <button
+              onClick={onBackToQuiz}
+              className="flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              ← {t('common.back')}
+            </button>
+          )}
+          <h1 className="text-3xl font-bold text-gray-900">{t('goals.title')}</h1>
+        </div>
         <div className="flex items-center space-x-4">
           {onLocaleChange && (
             <LanguageSwitcher 

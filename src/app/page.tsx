@@ -153,6 +153,7 @@ export default function Page() {
         locale={locale}
         sessionId={`session_${Date.now()}`}
         onLocaleChange={handleLocaleChange}
+        onBackToQuiz={() => setQuizState('quiz')}
       />
     );
   }
@@ -220,7 +221,10 @@ export default function Page() {
                 <div className="space-y-2">
                   {quizResult.top3.map((sdg) => (
                     <div key={sdg} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                      <span className="font-semibold text-gray-900">SDG {sdg}</span>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-gray-900">SDG {sdg}</span>
+                        <span className="text-sm text-gray-600">{t(`sdgs.${sdg}`)}</span>
+                      </div>
                       <span className="text-green-700 font-bold">
                         {quizResult.sdg_scores_norm[sdg.toString()]}
                       </span>
@@ -236,7 +240,10 @@ export default function Page() {
                 <div className="space-y-2">
                   {quizResult.bottom3.map((sdg) => (
                     <div key={sdg} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="font-semibold text-gray-900">SDG {sdg}</span>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-gray-900">SDG {sdg}</span>
+                        <span className="text-sm text-gray-600">{t(`sdgs.${sdg}`)}</span>
+                      </div>
                       <span className="text-gray-800 font-bold">
                         {quizResult.sdg_scores_norm[sdg.toString()]}
                       </span>

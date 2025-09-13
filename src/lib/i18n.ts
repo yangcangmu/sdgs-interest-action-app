@@ -19,6 +19,7 @@ export const messages = {
       edit: '編集',
       share: 'シェア',
       copy: 'コピー',
+      back: '戻る',
     },
     
     // ナビゲーション
@@ -203,6 +204,7 @@ export const messages = {
       edit: 'Edit',
       share: 'Share',
       copy: 'Copy',
+      back: 'Back',
     },
     
     // Navigation

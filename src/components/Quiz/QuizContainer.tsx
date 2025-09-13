@@ -41,7 +41,11 @@ export default function QuizContainer({
   useEffect(() => {
     // 言語変更時は現在の質問の回答のみ保持し、他の状態はリセットしない
     // これにより、ユーザーの進捗を保持しながら言語を切り替え可能
-  }, [locale]);
+    // ただし、質問データが変更された場合は現在の質問インデックスを調整
+    if (questions.length > 0 && currentQuestionIndex >= questions.length) {
+      setCurrentQuestionIndex(questions.length - 1);
+    }
+  }, [locale, questions.length, currentQuestionIndex]);
 
   // 現在の質問の回答を取得
   const currentAnswer = answers.get(currentQuestion.id);
@@ -133,6 +137,9 @@ export default function QuizContainer({
             locale={locale} 
             onLocaleChange={(newLocale: Locale) => {
               try {
+                // 言語切り替え前に現在の回答を保存
+                const currentAnswers = Array.from(answers.values());
+                console.log('Saving current answers before locale change:', currentAnswers.length);
                 onLocaleChange(newLocale);
               } catch (error) {
                 console.error('Error changing locale:', error);
