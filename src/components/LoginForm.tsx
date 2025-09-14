@@ -8,7 +8,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +16,9 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      await signIn(email, password);
+      // モック認証（実際の認証は行わない）
+      const username = email.split('@')[0] || 'User';
+      login(username, email);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'ログインに失敗しました';
       setError(errorMessage);
