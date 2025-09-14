@@ -214,20 +214,30 @@ const GoalForm = React.memo(function GoalForm({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {t('goals.sdgTags')} *
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-40 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-60 overflow-y-auto">
                 {SDG_OPTIONS.map((sdg) => (
                   <button
                     key={sdg.value}
                     type="button"
                     onClick={() => handleSdgTagToggle(sdg.value)}
-                    className={`flex items-center p-2 rounded-lg border-2 transition-all ${
+                    className={`flex items-start p-3 rounded-lg border-2 transition-all text-left ${
                       formData.sdgTags.includes(sdg.value)
                         ? 'border-blue-500 bg-blue-50 text-blue-900'
                         : 'border-gray-200 hover:border-gray-300 text-gray-700'
                     }`}
                   >
-                    <div className={`w-3 h-3 rounded-full mr-2 ${sdg.color}`} />
-                    <span className="text-xs font-medium">SDG {sdg.value}</span>
+                    <div className={`w-3 h-3 rounded-full mr-3 mt-1 flex-shrink-0 ${sdg.color}`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center mb-1">
+                        <span className="text-sm font-medium">SDG {sdg.value}</span>
+                      </div>
+                      <div className="text-xs text-gray-600 mb-1">
+                        {t(`sdgs.${sdg.value}`)}
+                      </div>
+                      <div className="text-xs text-gray-500 line-clamp-2">
+                        {t(`sdgsDescription.${sdg.value}`)}
+                      </div>
+                    </div>
                   </button>
                 ))}
               </div>

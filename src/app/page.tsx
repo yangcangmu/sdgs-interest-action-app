@@ -3,10 +3,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Question, QuizSubmission, Locale, QuizResult } from '@/types';
 import { useTranslation } from '@/lib/i18n';
+import { useAuth } from '@/contexts/AuthContext';
 import QuizContainer from '@/components/Quiz/QuizContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import GoalsList from '@/components/Goals/GoalsList';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { AuthButton } from '@/components/Auth/AuthButton';
 
 export default function Page() {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -15,7 +17,17 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [quizState, setQuizState] = useState<'welcome' | 'quiz' | 'results' | 'goals'>('welcome');
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null);
+  const [sessionId] = useState(() => `session_${Date.now()}`);
+  const [hasStarted, setHasStarted] = useState(false); // ゲスト利用またはログインしたかどうか
   const { t } = useTranslation(locale);
+  const { user, isAuthenticated } = useAuth();
+
+  // 認証状態が変更されたときにhasStartedを更新
+  useEffect(() => {
+    if (isAuthenticated) {
+      setHasStarted(true);
+    }
+  }, [isAuthenticated]);
 
   // 質問データを取得（初回のみ or locale変更時）
   const didFetchRef = useRef(false);
@@ -50,7 +62,10 @@ export default function Page() {
   }, [locale, t]);
 
   const handleStartQuiz = () => {
-    setQuizState('quiz');
+    // 認証済みまたはゲスト利用開始済みの場合のみクイズを開始
+    if (isAuthenticated || hasStarted) {
+      setQuizState('quiz');
+    }
   };
 
   const handleQuizComplete = async (submissions: QuizSubmission[]) => {
@@ -63,7 +78,7 @@ export default function Page() {
         },
         body: JSON.stringify({
           submissions,
-          sessionId: `session_${Date.now()}`,
+          sessionId,
         }),
       });
 
@@ -94,6 +109,11 @@ export default function Page() {
 
   const handleSetGoals = () => {
     setQuizState('goals');
+  };
+
+  const handleStartAsGuest = () => {
+    setHasStarted(true);
+    setQuizState('quiz');
   };
 
   const handleLocaleChange = (newLocale: Locale) => {
@@ -151,7 +171,7 @@ export default function Page() {
     return (
       <GoalsList
         locale={locale}
-        sessionId={`session_${Date.now()}`}
+        sessionId={sessionId}
         onLocaleChange={handleLocaleChange}
         onBackToQuiz={() => setQuizState('results')}
       />
@@ -162,8 +182,9 @@ export default function Page() {
   if (quizState === 'results' && quizResult) {
     return (
       <div className="min-h-screen bg-gray-50">
-        {/* 言語切り替えボタン */}
-        <div className="absolute top-4 right-4 z-10">
+        {/* ヘッダー */}
+        <div className="absolute top-4 right-4 z-10 flex items-center space-x-4">
+          <AuthButton />
           <LanguageSwitcher 
             locale={locale} 
             onLocaleChange={handleLocaleChange}
@@ -196,10 +217,16 @@ export default function Page() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(quizResult.sdg_scores_norm).map(([sdg, score]) => (
-                  <div key={sdg} className="p-4 border rounded-lg">
+                  <div key={sdg} className="p-4 border rounded-lg bg-white shadow-sm">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold text-gray-900">SDG {sdg}</span>
-                      <span className="text-lg font-bold text-blue-700">{score}</span>
+                      <span className="text-lg font-bold text-blue-700">{score}%</span>
+                    </div>
+                    <div className="mb-2">
+                      <span className="text-sm font-medium text-gray-700">{t(`sdgs.${sdg}`)}</span>
+                    </div>
+                    <div className="mb-3">
+                      <span className="text-xs text-gray-500">{t(`sdgsDescription.${sdg}`)}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
@@ -221,12 +248,13 @@ export default function Page() {
                 <div className="space-y-2">
                   {quizResult.top3.map((sdg) => (
                     <div key={sdg} className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                      <div className="flex flex-col">
+                      <div className="flex flex-col flex-1 mr-4">
                         <span className="font-semibold text-gray-900">SDG {sdg}</span>
-                        <span className="text-sm text-gray-600">{t(`sdgs.${sdg}`)}</span>
+                        <span className="text-sm text-gray-600 font-medium">{t(`sdgs.${sdg}`)}</span>
+                        <span className="text-xs text-gray-500 mt-1">{t(`sdgsDescription.${sdg}`)}</span>
                       </div>
-                      <span className="text-green-700 font-bold">
-                        {quizResult.sdg_scores_norm[sdg.toString()]}
+                      <span className="text-green-700 font-bold text-lg">
+                        {quizResult.sdg_scores_norm[sdg.toString()]}%
                       </span>
                     </div>
                   ))}
@@ -240,12 +268,13 @@ export default function Page() {
                 <div className="space-y-2">
                   {quizResult.bottom3.map((sdg) => (
                     <div key={sdg} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex flex-col">
+                      <div className="flex flex-col flex-1 mr-4">
                         <span className="font-semibold text-gray-900">SDG {sdg}</span>
-                        <span className="text-sm text-gray-600">{t(`sdgs.${sdg}`)}</span>
+                        <span className="text-sm text-gray-600 font-medium">{t(`sdgs.${sdg}`)}</span>
+                        <span className="text-xs text-gray-500 mt-1">{t(`sdgsDescription.${sdg}`)}</span>
                       </div>
-                      <span className="text-gray-800 font-bold">
-                        {quizResult.sdg_scores_norm[sdg.toString()]}
+                      <span className="text-gray-800 font-bold text-lg">
+                        {quizResult.sdg_scores_norm[sdg.toString()]}%
                       </span>
                     </div>
                   ))}
@@ -305,8 +334,9 @@ export default function Page() {
   // ウェルカム画面
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* 言語切り替えボタン */}
-      <div className="absolute top-4 right-4">
+      {/* ヘッダー */}
+      <div className="absolute top-4 right-4 flex items-center space-x-4">
+        <AuthButton />
         <LanguageSwitcher 
           locale={locale} 
           onLocaleChange={handleLocaleChange}
@@ -345,12 +375,42 @@ export default function Page() {
               </div>
             </div>
 
-            <button
-              onClick={handleStartQuiz}
-              className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
-            >
-              {t('onboarding.startQuiz')}
-            </button>
+            {/* 認証状態に基づくボタン表示 */}
+            {!isAuthenticated && !hasStarted ? (
+              <div className="space-y-4">
+                <div className="text-center">
+                  <p className="text-gray-600 mb-4">
+                    {t('onboarding.chooseOption')}
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <button
+                    onClick={handleStartAsGuest}
+                    className="px-8 py-4 bg-green-600 text-white text-lg font-semibold rounded-lg hover:bg-green-700 transition-colors shadow-lg"
+                  >
+                    {t('onboarding.startAsGuest')}
+                  </button>
+                  <div className="text-center text-gray-500 text-sm flex items-center">
+                    {t('onboarding.or')}
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-2">
+                      {t('onboarding.loginToSave')}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {t('onboarding.loginHint')}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={handleStartQuiz}
+                className="px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+              >
+                {t('onboarding.startQuiz')}
+              </button>
+            )}
           </div>
 
           <div className="text-sm text-gray-500">

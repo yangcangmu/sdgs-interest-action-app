@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Goal, Checkin, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
+import { useAuth } from '@/contexts/AuthContext';
 import { Plus, Edit, Trash2, Calendar, Target, CheckCircle, Circle } from 'lucide-react';
 import GoalForm from './GoalForm';
 import LanguageSwitcher from '../common/LanguageSwitcher';
+import { AuthButton } from '../Auth/AuthButton';
 
 interface GoalsListProps {
   locale: Locale;
@@ -242,6 +244,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
           <h1 className="text-3xl font-bold text-gray-900">{t('goals.title')}</h1>
         </div>
         <div className="flex items-center space-x-4">
+          <AuthButton />
           {onLocaleChange && (
             <LanguageSwitcher 
               locale={locale} 
@@ -251,13 +254,35 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
           <button
             onClick={() => {
               console.log('Opening form with draft:', draftGoal);
-              setShowGoalForm(true);
+              console.log('Current goals:', goals);
+              // 既存の目標がある場合は最初の目標を編集モードで開く
+              if (goals.length > 0) {
+                console.log('Editing existing goal:', goals[0]);
+                setEditingGoal(goals[0]);
+              } else {
+                console.log('Creating new goal');
+                setShowGoalForm(true);
+              }
             }}
             className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
             <Plus className="w-4 h-4 mr-2" />
-            {t('goals.createGoal')}
+            {goals.length > 0 ? t('goals.editGoal') : t('goals.createGoal')}
           </button>
+          
+          {/* 新しい目標を作成するボタン */}
+          {goals.length > 0 && (
+            <button
+              onClick={() => {
+                console.log('Creating new goal with draft:', draftGoal);
+                setShowGoalForm(true);
+              }}
+              className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {t('goals.createGoal')}
+            </button>
+          )}
         </div>
       </div>
 
@@ -313,10 +338,10 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
                   <div className="flex items-center text-sm text-gray-500">
                     <Calendar className="w-4 h-4 mr-1" />
                     <span className="mr-4">
-                      {goal.cadence === 'daily' ? '毎日' : '毎週'}
-                      {goal.cadence === 'weekly' && ` (${goal.targetPerWeek}回)`}
+                      {goal.cadence === 'daily' ? t('goals.cadenceOptions.daily') : t('goals.cadenceOptions.weekly')}
+                      {goal.cadence === 'weekly' && ` (${goal.targetPerWeek}${t('goals.timesPerWeek')})`}
                     </span>
-                    <span>開始: {new Date(goal.startAt).toLocaleDateString('ja-JP')}</span>
+                    <span>{t('goals.startDate')}: {new Date(goal.startAt).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US')}</span>
                   </div>
                 </div>
 
@@ -367,7 +392,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
                           {new Date(date).getDate()}
                         </span>
                         <span className="text-xs">
-                          {new Date(date).toLocaleDateString('ja-JP', { weekday: 'short' })}
+                          {new Date(date).toLocaleDateString(locale === 'ja' ? 'ja-JP' : 'en-US', { weekday: 'short' })}
                         </span>
                       </button>
                     );
@@ -386,7 +411,7 @@ export default function GoalsList({ locale, sessionId, onLocaleChange, onBackToQ
           onSave={handleCreateGoal}
           onCancel={handleCancelForm}
           onSaveDraft={handleSaveDraft}
-          initialGoal={draftGoal}
+          initialGoal={draftGoal || (goals.length > 0 ? goals[0] : undefined)}
         />
       )}
 
