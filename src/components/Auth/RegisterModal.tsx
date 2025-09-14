@@ -12,7 +12,7 @@ interface RegisterModalProps {
 }
 
 export const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose, onSwitchToLogin }) => {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: '',

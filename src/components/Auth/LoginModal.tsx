@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useAuth } from '@/contexts/AuthContext';
-import { X, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { X, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -12,7 +12,7 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToRegister }) => {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',

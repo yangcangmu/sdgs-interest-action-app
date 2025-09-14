@@ -8,7 +8,7 @@ import { RegisterModal } from './RegisterModal';
 import { User, LogOut, Settings } from 'lucide-react';
 
 export const AuthButton: React.FC = () => {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const { user, logout, isAuthenticated } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);

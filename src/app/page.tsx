@@ -20,7 +20,7 @@ export default function Page() {
   const [sessionId] = useState(() => `session_${Date.now()}`);
   const [hasStarted, setHasStarted] = useState(false); // ゲスト利用またはログインしたかどうか
   const { t } = useTranslation(locale);
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // 認証状態が変更されたときにhasStartedを更新
   useEffect(() => {

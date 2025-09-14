@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Goal, Checkin, Locale } from '@/types';
 import { useTranslation } from '@/lib/i18n';
-import { useAuth } from '@/contexts/AuthContext';
 import { Plus, Edit, Trash2, Calendar, Target, CheckCircle, Circle } from 'lucide-react';
 import GoalForm from './GoalForm';
 import LanguageSwitcher from '../common/LanguageSwitcher';

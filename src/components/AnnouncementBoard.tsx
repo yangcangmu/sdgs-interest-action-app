@@ -45,7 +45,7 @@ export default function AnnouncementBoard() {
     try {
       await addDoc(collection(db, 'announcements'), {
         message: newMessage.trim(),
-        authorName: user.displayName || user.email?.split('@')[0] || '匿名',
+        authorName: (user as any).displayName || user.email?.split('@')[0] || '匿名',
         createdAt: serverTimestamp(),
       });
       setNewMessage('');
