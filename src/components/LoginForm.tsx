@@ -55,8 +55,8 @@ export default function LoginForm() {
               padding: '12px',
               borderRadius: 8,
               border: '1px solid #444',
-              background: '#2b2b2b',
-              color: '#fff',
+              background: '#ffffff',
+              color: '#000000',
               fontSize: 16
             }}
             placeholder="example@email.com"
@@ -77,8 +77,8 @@ export default function LoginForm() {
               padding: '12px',
               borderRadius: 8,
               border: '1px solid #444',
-              background: '#2b2b2b',
-              color: '#fff',
+              background: '#ffffff',
+              color: '#000000',
               fontSize: 16
             }}
             placeholder="パスワードを入力"
