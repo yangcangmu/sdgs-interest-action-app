@@ -3,6 +3,18 @@
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
+const inputStyle = {
+  width: '100%',
+  padding: '12px',
+  borderRadius: 8,
+  border: '1px solid #444',
+  background: '#ffffff',
+  color: '#000000',
+  fontSize: 16,
+  WebkitTextFillColor: '#000000',
+  WebkitOpacity: 1
+} as React.CSSProperties;
+
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,15 +62,7 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{
-              width: '100%',
-              padding: '12px',
-              borderRadius: 8,
-              border: '1px solid #444',
-              background: '#ffffff',
-              color: '#000000 !important',
-              fontSize: 16
-            }}
+            style={inputStyle}
             placeholder="example@email.com"
           />
         </div>
@@ -72,15 +76,7 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{
-              width: '100%',
-              padding: '12px',
-              borderRadius: 8,
-              border: '1px solid #444',
-              background: '#ffffff',
-              color: '#000000 !important',
-              fontSize: 16
-            }}
+            style={inputStyle}
             placeholder="パスワードを入力"
           />
         </div>
