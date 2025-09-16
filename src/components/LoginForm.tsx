@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import '../styles/login.css';
 
 const inputStyle = {
   width: '100%',
@@ -12,7 +13,9 @@ const inputStyle = {
   color: '#000000',
   fontSize: 16,
   WebkitTextFillColor: '#000000',
-  WebkitOpacity: 1
+  WebkitOpacity: 1,
+  opacity: 1,
+  textFillColor: '#000000'
 } as React.CSSProperties;
 
 export default function LoginForm() {
@@ -62,7 +65,15 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={inputStyle}
+            style={{
+              width: '100%',
+              padding: '12px',
+              borderRadius: 8,
+              border: '1px solid #444',
+              backgroundColor: '#ffffff',
+              color: '#000000',
+              fontSize: 16
+            }}
             placeholder="example@email.com"
           />
         </div>
@@ -76,7 +87,15 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={inputStyle}
+            style={{
+              width: '100%',
+              padding: '12px',
+              borderRadius: 8,
+              border: '1px solid #444',
+              backgroundColor: '#ffffff',
+              color: '#000000',
+              fontSize: 16
+            }}
             placeholder="パスワードを入力"
           />
         </div>
